@@ -28,8 +28,8 @@ FROM base as runtime
 RUN mkdir /swt-python
 WORKDIR /swt-python
 COPY --from=build /swt-python/*.so /swt-python
-COPY test.py /swt-python
+COPY example.py /swt-python
 COPY requirements.txt /swt-python
 RUN pip install --no-cache-dir -r requirements.txt
 COPY input.jpg /swt-python
-ENTRYPOINT ["python", "test.py"]
+ENTRYPOINT ["python", "example.py"]
