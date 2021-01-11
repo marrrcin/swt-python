@@ -1,36 +1,25 @@
 # Fast Stroke Width Transform for Python
-This repo contains wrapper for libccv's SWT algorithm for use in Python.
+This repo contains wrapper for libccv's SWT algorithm for use in Python 3.
+It's compatible with Linux, macOS and Docker.
 
-For more information, see my blog post: http://zablo.net/blog/post/stroke-width-transform-swt-python
+For more information, see my blog post: http://zablo.net/blog/post/stroke-width-transform-swt-python-3.9
 
-## How to:
+## Usage
 
-1. Checkout libccv (I've forked it at the time when I built this wrapper):
-    ```
-    git clone https://github.com/marrrcin/ccv.git
-    ```
-1. Put ```ccvwrapper.*``` files from this repo into ```/lib``` folder of ccv
-1. Use the following script to build the wrapper:
-    ```
-    #!/bin/bash
-    swig -python ccvwrapper.i
+```python
+from swt_python3 import swt
 
-    gcc -fpic -c ccvwrapper.c ccvwrapper_wrap.c ccv_algebra.c ccv_basic.c ccv_cache.c ccv_classic.c ccv_io.c ccv_memory.c ccv_output.c ccv_resample.c ccv_sift.c ccv_swt.c ccv_transform.c ccv_util.c ./3rdparty/sha1/sha1.c -I/usr/include/python2.7
+buffer = open("input.jpg", "rb").read()
+swt_result: List[dict] = swt(buffer, len(buffer))
+for item in swt_result:
+    x, y, width, height = [item[key] for key in ("x", "y", "width", "height")]
+    print(x, y, width, height)
+```
 
-    ld -shared ccvwrapper.o ccvwrapper_wrap.o ccv_algebra.o ccv_basic.o ccv_cache.o ccv_classic.o ccv_io.o ccv_memory.o ccv_output.o ccv_resample.o ccv_sift.o ccv_swt.o ccv_transform.o ccv_util.o sha1.o -ljpeg -o _ccvwrapper.so
+See `example.py` for details.
 
-    ```
-1. Copy outputs of the build into your project
-    ```
-    cp ccvwrapper* ~/PycharmProjects/path_to_your_project
-    cp _ccvwrapper* ~/PycharmProjects/path_to_your_project
-    ```
-
-1. In Python just use:
-    ```
-    import ccvwrapper
-    import numpy as np
-    swt_result_raw = ccvwrapper.swt(open("test_input.jpg", "rb").read(), len(bytes), 1024, 1360)
-    swt_result = np.reshape(swt_result_raw, (len(swt_result_raw) / 4, 4))
-    ```
-1. Done!
+## Docker image
+```bash
+docker pull marrrcin/swt-python3-ccv:20210111
+docker run --rm -it --entrypoint bash marrrcin/swt-python3-ccv:20210111
+```
