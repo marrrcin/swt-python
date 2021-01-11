@@ -22,9 +22,9 @@ if __name__ == "__main__":
     end = time.time()
     image = imread(image_name)
     for item in swt_result:
+        x, y, width, height = [item[key] for key in ("x", "y", "width", "height")]
+        print(x, y, width, height)
         for i in range(0, 3):  # just to make lines thicker
-            x, y, width, height = [item[key] for key in ("x", "y", "width", "height")]
-            print(x, y, width, height)
             rr, cc = rectangle_perimeter(
                 y + i, x + i, height, width, shape=image.shape, clip=True
             )
